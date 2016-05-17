@@ -1,0 +1,65 @@
+{
+  "name": "redux-auto-select",
+  "version": "0.10.4",
+  "description": "WIP",
+  "main": "lib/index.js",
+  "jsnext:main": "src/index.js",
+  "scripts": {
+    "lint-test": "eslint test.js",
+    "lint": "eslint src",
+    "test": "babel-node test/index.js | tap-spec",
+    "check": "npm run lint && npm run test",
+    "compile": "rimraf lib && babel -d lib/ src/",
+    "build:umd:dev": "webpack src/index.js dist/redux-auto-select.js --config webpack.config.dev.js",
+    "build:umd:prod": "webpack src/index.js dist/redux-auto-select.min.js --config webpack.config.prod.js",
+    "build:umd": "rimraf dist && npm run build:umd:dev && npm run build:umd:prod",
+    "prepublish": "npm run check && npm run compile && npm run build:umd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yelouafi/redux-saga.git"
+  },
+  "keywords": [
+    "javascript",
+    "redux",
+    "observable",
+    "selector"
+  ],
+  "author": "Yassine ELOUAFI <yelouafi@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yelouafi/redux-auto-select/issues"
+  },
+  "homepage": "https://github.com/yelouafi/redux-auto-select#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.1.18",
+    "babel-core": "^6.7.6",
+    "babel-eslint": "^6.0.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.1.18",
+    "babel-preset-stage-2": "^6.1.18",
+    "eslint": "^2.10.2",
+    "react": "^15.0.0",
+    "react-dom": "^15.0.0",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "redux-logger": "^2.6.1",
+    "rimraf": "^2.5.2",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.5.1",
+    "webpack": "1.13.0",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.6.0"
+  },
+  "npmName": "redux-saga",
+  "npmFileMap": [
+    {
+      "basePath": "/dist/",
+      "files": [
+        "*.js"
+      ]
+    }
+  ]
+}
