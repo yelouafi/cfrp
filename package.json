@@ -1,5 +1,5 @@
 {
-  "name": "redux-auto-select",
+  "name": "cfrp",
   "version": "0.10.4",
   "description": "WIP",
   "main": "lib/index.js",
@@ -10,27 +10,22 @@
     "test": "babel-node test/index.js | tap-spec",
     "check": "npm run lint && npm run test",
     "compile": "rimraf lib && babel -d lib/ src/",
-    "build:umd:dev": "webpack src/index.js dist/redux-auto-select.js --config webpack.config.dev.js",
-    "build:umd:prod": "webpack src/index.js dist/redux-auto-select.min.js --config webpack.config.prod.js",
+    "build:umd:dev": "webpack src/index.js dist/cfrp.js --config webpack.config.dev.js",
+    "build:umd:prod": "webpack src/index.js dist/cfrp.min.js --config webpack.config.prod.js",
     "build:umd": "rimraf dist && npm run build:umd:dev && npm run build:umd:prod",
     "prepublish": "npm run check && npm run compile && npm run build:umd"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yelouafi/redux-saga.git"
+    "url": "git+https://github.com/yelouafi/cfrp.git"
   },
-  "keywords": [
-    "javascript",
-    "redux",
-    "observable",
-    "selector"
-  ],
+  "keywords": [],
   "author": "Yassine ELOUAFI <yelouafi@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yelouafi/redux-auto-select/issues"
+    "url": "https://github.com/yelouafi/cfrp/issues"
   },
-  "homepage": "https://github.com/yelouafi/redux-auto-select#readme",
+  "homepage": "https://github.com/yelouafi/cfrp#readme",
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.1.18",
@@ -43,9 +38,6 @@
     "eslint": "^2.10.2",
     "react": "^15.0.0",
     "react-dom": "^15.0.0",
-    "react-redux": "^4.4.5",
-    "redux": "^3.5.2",
-    "redux-logger": "^2.6.1",
     "rimraf": "^2.5.2",
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1",
@@ -53,7 +45,7 @@
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.6.0"
   },
-  "npmName": "redux-saga",
+  "npmName": "cfrp",
   "npmFileMap": [
     {
       "basePath": "/dist/",
