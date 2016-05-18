@@ -1,7 +1,7 @@
 import test from 'tape';
 import { registerDep } from '../src/tracker'
 import subscribable from '../src/subscribable'
-import autoSubscriberPrototype from '../src/autoSubscriberPrototype'
+import {AutoSubscriberPrototype} from '../src/autoSubscriber'
 
 test('autoSubscriberPrototype', assert => {
 
@@ -15,7 +15,7 @@ test('autoSubscriberPrototype', assert => {
   const dep1 = trackable('dep1')
   const dep2 = trackable('dep1')
 
-  const autoSub = Object.create(autoSubscriberPrototype)
+  const autoSub = Object.create(AutoSubscriberPrototype)
   autoSub.initAutoSubscriber(false)
 
   const func = () => {

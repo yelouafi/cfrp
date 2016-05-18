@@ -1,4 +1,6 @@
 
 import './tracker'
 import './subscribable'
-import './autoSubscriberPrototype'
+import './autoSubscriber'
+import './computed'
+import './reaction'
