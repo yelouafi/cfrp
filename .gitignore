@@ -1,7 +1,6 @@
 # Logs
 logs
 *.log
-npm-debug.log*
 
 # Runtime data
 pids
@@ -24,10 +23,14 @@ coverage
 build/Release
 
 # Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
 
-# Optional npm cache directory
-.npm
+# compiled js files
+lib
 
-# Optional REPL history
-.node_repl_history
+# compiled umd js files
+# dist (keep this for vanilla examples)
+
+# docs generated files
+_book
