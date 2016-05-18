@@ -30,7 +30,7 @@ export const ReactionPrototype = Object.assign({}, AutoSubscriberPrototype, {
 
 })
 
-export function autorun(action, target, name) {
+export default function reaction(action, target, name) {
   const reaction = Object.create(ReactionPrototype)
   reaction.initReaction(action, target, name)
   reaction.subscribe()

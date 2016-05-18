@@ -28,6 +28,7 @@ export const AutoSubscriberPrototype = {
     const thisId = this.id
     for(var key in sources) {
       const src = sources[key]
+      if(src === undefined) continue
       if(src[thisId] !== this.trackVersion) {
         src.removeDep(this)
         src[thisId] = undefined
