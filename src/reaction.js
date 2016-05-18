@@ -1,7 +1,7 @@
 
-import { autoSubscriberPrototype } from './autoSubscriberPrototype'
+import { AutoSubscriberPrototype } from './autoSubscriber'
 
-const reactionPrototype = Object.assign({}, autoSubscriberPrototype, {
+export const ReactionPrototype = Object.assign({}, AutoSubscriberPrototype, {
 
   initReaction(action, target, name) {
     this.name = name
@@ -10,17 +10,18 @@ const reactionPrototype = Object.assign({}, autoSubscriberPrototype, {
   },
 
   onReady() {
-    if(this.connected) {
+    if(this.connected && this.dirty) {
+      this.dirty = false // prevents glitches
       this.track(this.action)
     }
   },
 
-  connect() {
+  subscribe() {
     this.connected = true
     this.track(this.action)
   },
 
-  disconnect() {
+  unsubscribe() {
     if(this.connected) {
       this.connected = false
       this.disconnect()
@@ -30,9 +31,9 @@ const reactionPrototype = Object.assign({}, autoSubscriberPrototype, {
 })
 
 export function autorun(action, target, name) {
-  const reaction = Object.create(reactionPrototype)
+  const reaction = Object.create(ReactionPrototype)
   reaction.initReaction(action, target, name)
-  reaction.connect()
+  reaction.subscribe()
 
-  return () => reaction.disconnect()
+  return () => reaction.unsubscribe()
 }

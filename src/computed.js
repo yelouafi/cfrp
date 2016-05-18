@@ -1,35 +1,33 @@
 
-import { subscribablePrototype } from './subscribable'
-import { autoSubscriberPrototype } from './autoSubscriberPrototype'
+import { SubscribablePrototype } from './subscribable'
+import { AutoSubscriberPrototype } from './autoSubscriber'
 import { track, registerDep } from './tracker'
 
-const computedPrototype = Object.assign({}, subscribablePrototype, autoSubscriberPrototype, {
+export const ComputedPrototype = Object.assign({}, SubscribablePrototype, AutoSubscriberPrototype, {
 
   initComputed(fn, target, name) {
     this.initSubscribable(name)
     this.initAutoSubscriber(false)
+
     this.fn = !target ? fn : () => fn.call(this)
-    this.connected = false
   },
 
   onAddDep() {
-    if(!this.connected) {
-      this.connected = true
+    if(this.depsCount === 1) {
       this.lastResult = this.track(this.fn)
     }
   },
 
   onRemoveDep() {
     if(!this.depsCount) {
-      this.connected = false
       this.disconnect()
     }
   },
 
   get() {
     registerDep(this)
-    if(!this.connected) {
-      this.lastResult = track(this.fn, /* null spy */)
+    if(!this.depsCount) {
+      this.lastResult = track(this.fn, null)
     } else if(this.dirty) {
       this.dirty = false
       this.lastResult = this.track(this.fn)
@@ -38,8 +36,8 @@ const computedPrototype = Object.assign({}, subscribablePrototype, autoSubscribe
   }
 })
 
-export function computed(fn, target, name) {
-  const comp = Object.create(computedPrototype)
+export default function computed(fn, target, name) {
+  const comp = Object.create(ComputedPrototype)
   comp.initComputed(fn, target, name)
   return () => comp.get()
 }

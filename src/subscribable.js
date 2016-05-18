@@ -6,7 +6,8 @@ import { eachObj, autoId } from './utils'
   Reaction    : { id, dirty, onReady }
 */
 
-export const subscribablePrototype = {
+export const SubscribablePrototype = {
+  isSubscribable() { return true },
 
   initSubscribable(name) {
     this.id = this.id || autoId()
@@ -50,12 +51,16 @@ export const subscribablePrototype = {
   notify() {
     this.notifyDirty()
     this.notifyReady()
+  },
+
+  toString() {
+    return `subscribable ${this.name}`
   }
 }
 
 
 export default function subscribable(name) {
-  const sub = Object.create(subscribablePrototype)
+  const sub = Object.create(SubscribablePrototype)
   sub.initSubscribable(name)
   return sub
 }

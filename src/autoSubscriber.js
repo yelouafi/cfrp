@@ -12,7 +12,8 @@ const addSource = self => src => {
   }
 }
 
-const autoSubscriberPrototype = {
+export const AutoSubscriberPrototype = {
+  isAutoSubscriber() { return true },
 
   initAutoSubscriber(isReaction) {
     this.id = this.id || autoId()
@@ -44,6 +45,7 @@ const autoSubscriberPrototype = {
 
   disconnect() {
     const sources = this.sources
+    this.sources = {}
     for(var key in sources) {
       const src = sources[key]
       src.removeDep(this)
@@ -51,5 +53,3 @@ const autoSubscriberPrototype = {
     }
   }
 }
-
-export default autoSubscriberPrototype
