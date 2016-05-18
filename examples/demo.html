@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Observable fantasy</title>
+  </head>
+  <body>
+
+  <button id="up">Up</button>
+  <button id="down">Down</button>
+  <button id="reset">Reset</button>
+
+  <span id="span"></span>
+
+<script src="../dist/cfrp.js" charset="utf-8"></script>
+<script>
+
+const A = cfrp.observable(0)
+const printB = cfrp.observable(false)
+const B = cfrp.computed(() => A.value * 2)
+
+cfrp.reaction(() => console.log(`A: ${A.value}`, printB.value ? `B: ${B()}` : ''))
+
+</script>
+  </body>
+</html>
