@@ -59,13 +59,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.reaction = exports.computed = exports.observable = undefined;
+	exports.store = exports.reaction = exports.computed = exports.observable = undefined;
 
-	var _observable = __webpack_require__(6);
+	var _observable = __webpack_require__(5);
 
 	var _observable2 = _interopRequireDefault(_observable);
 
-	var _computed = __webpack_require__(5);
+	var _computed = __webpack_require__(4);
 
 	var _computed2 = _interopRequireDefault(_computed);
 
@@ -73,112 +73,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _reaction2 = _interopRequireDefault(_reaction);
 
+	var _store = __webpack_require__(8);
+
+	var _store2 = _interopRequireDefault(_store);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.observable = _observable2.default;
 	exports.computed = _computed2.default;
 	exports.reaction = _reaction2.default;
+	exports.store = _store2.default;
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.track = track;
-	exports.registerDep = registerDep;
-
-	var spyStack = [];
-	var currentSpy = void 0;
-
-	function track(fn, spy) {
-	  spyStack.push(currentSpy);
-	  currentSpy = spy;
-	  var res = fn();
-	  currentSpy = spyStack.pop();
-	  return res;
-	}
-
-	function registerDep(dep) {
-	  if (currentSpy) {
-	    currentSpy(dep);
-	  }
-	}
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.AutoSubscriberPrototype = undefined;
-
-	var _utils = __webpack_require__(4);
-
-	var _tracker = __webpack_require__(1);
-
-	var addSource = function addSource(self) {
-	  return function (src) {
-	    //console.log('addSource', self.id, self.trackVersion)
-	    var sources = self.sources;
-	    var srcId = src.id;
-	    src[self.id] = self.trackVersion;
-	    if (!sources[srcId]) {
-	      sources[srcId] = src;
-	      src.addDep(self);
-	    }
-	  };
-	};
-
-	var AutoSubscriberPrototype = exports.AutoSubscriberPrototype = {
-	  isAutoSubscriber: function isAutoSubscriber() {
-	    return true;
-	  },
-	  initAutoSubscriber: function initAutoSubscriber(isReaction) {
-	    this.id = this.id || (0, _utils.autoId)();
-	    this.isReaction = isReaction;
-	    this.sources = {};
-	    this.trackVersion = 0;
-	    this.addSource = addSource(this);
-	  },
-	  updateSources: function updateSources() {
-	    var sources = this.sources;
-	    var thisId = this.id;
-	    for (var key in sources) {
-	      var src = sources[key];
-	      if (src === undefined) continue;
-	      if (src[thisId] !== this.trackVersion) {
-	        src.removeDep(this);
-	        src[thisId] = undefined;
-	        sources[src.id] = undefined;
-	      }
-	    }
-	  },
-	  track: function track(fn) {
-	    this.trackVersion++;
-	    var result = (0, _tracker.track)(fn, this.addSource);
-	    this.updateSources();
-	    return result;
-	  },
-	  disconnect: function disconnect() {
-	    var sources = this.sources;
-	    this.sources = {};
-	    for (var key in sources) {
-	      var src = sources[key];
-	      src.removeDep(this);
-	      src[this.id] = undefined;
-	    }
-	  }
-	};
-
-/***/ },
-/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -189,7 +96,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.SubscribablePrototype = undefined;
 	exports.default = subscribable;
 
-	var _utils = __webpack_require__(4);
+	var _utils = __webpack_require__(6);
 
 	/*
 	  Subscriber  : Derivation | Reaction
@@ -257,7 +164,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 4 */
+/* 2 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -265,23 +172,97 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.autoId = autoId;
-	exports.eachObj = eachObj;
+	exports.track = track;
+	exports.registerDep = registerDep;
 
-	var _autoId = 0;
-	function autoId() {
-	  return ++_autoId;
+	var spyStack = [];
+	var currentSpy = void 0;
+
+	function track(fn, spy) {
+	  spyStack.push(currentSpy);
+	  currentSpy = spy;
+	  var res = fn();
+	  currentSpy = spyStack.pop();
+	  return res;
 	}
 
-	function eachObj(obj, fn) {
-	  for (var key in obj) {
-	    var val = obj[key];
-	    val !== undefined && fn(val, key);
+	function registerDep(dep) {
+	  if (currentSpy) {
+	    currentSpy(dep);
 	  }
 	}
 
 /***/ },
-/* 5 */
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.AutoSubscriberPrototype = undefined;
+
+	var _utils = __webpack_require__(6);
+
+	var _tracker = __webpack_require__(2);
+
+	var addSource = function addSource(self) {
+	  return function (src) {
+	    //console.log('addSource', self.id, self.trackVersion)
+	    var sources = self.sources;
+	    var srcId = src.id;
+	    src[self.id] = self.trackVersion;
+	    if (!sources[srcId]) {
+	      sources[srcId] = src;
+	      src.addDep(self);
+	    }
+	  };
+	};
+
+	var AutoSubscriberPrototype = exports.AutoSubscriberPrototype = {
+	  isAutoSubscriber: function isAutoSubscriber() {
+	    return true;
+	  },
+	  initAutoSubscriber: function initAutoSubscriber(isReaction) {
+	    this.id = this.id || (0, _utils.autoId)();
+	    this.isReaction = isReaction;
+	    this.sources = {};
+	    this.trackVersion = 0;
+	    this.addSource = addSource(this);
+	  },
+	  updateSources: function updateSources() {
+	    var sources = this.sources;
+	    var thisId = this.id;
+	    for (var key in sources) {
+	      var src = sources[key];
+	      if (src === undefined) continue;
+	      if (src[thisId] !== this.trackVersion) {
+	        src.removeDep(this);
+	        src[thisId] = undefined;
+	        sources[src.id] = undefined;
+	      }
+	    }
+	  },
+	  track: function track(fn) {
+	    this.trackVersion++;
+	    var result = (0, _tracker.track)(fn, this.addSource);
+	    this.updateSources();
+	    return result;
+	  },
+	  disconnect: function disconnect() {
+	    var sources = this.sources;
+	    this.sources = {};
+	    for (var key in sources) {
+	      var src = sources[key];
+	      src.removeDep(this);
+	      src[this.id] = undefined;
+	    }
+	  }
+	};
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -292,11 +273,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ComputedPrototype = undefined;
 	exports.default = computed;
 
-	var _subscribable = __webpack_require__(3);
+	var _subscribable = __webpack_require__(1);
 
-	var _autoSubscriber = __webpack_require__(2);
+	var _autoSubscriber = __webpack_require__(3);
 
-	var _tracker = __webpack_require__(1);
+	var _tracker = __webpack_require__(2);
 
 	var ComputedPrototype = exports.ComputedPrototype = Object.assign({}, _subscribable.SubscribablePrototype, _autoSubscriber.AutoSubscriberPrototype, {
 	  initComputed: function initComputed(fn, target, name) {
@@ -340,7 +321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -350,17 +331,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = observable;
 
-	var _subscribable = __webpack_require__(3);
+	var _subscribable = __webpack_require__(1);
 
 	var _subscribable2 = _interopRequireDefault(_subscribable);
 
-	var _tracker = __webpack_require__(1);
+	var _tracker = __webpack_require__(2);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function observable(seed, name) {
 	  var sub = (0, _subscribable2.default)(name);
 	  return {
+	    pick: function pick() {
+	      return seed;
+	    },
+
 	    get value() {
 	      (0, _tracker.registerDep)(sub);
 	      return seed;
@@ -381,6 +366,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.autoId = autoId;
+	exports.eachObj = eachObj;
+
+	var _autoId = 0;
+	function autoId() {
+	  return ++_autoId;
+	}
+
+	function eachObj(obj, fn) {
+	  for (var key in obj) {
+	    var val = obj[key];
+	    val !== undefined && fn(val, key);
+	  }
+	}
+
+/***/ },
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -392,7 +401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ReactionPrototype = undefined;
 	exports.default = reaction;
 
-	var _autoSubscriber = __webpack_require__(2);
+	var _autoSubscriber = __webpack_require__(3);
 
 	var ReactionPrototype = exports.ReactionPrototype = Object.assign({}, _autoSubscriber.AutoSubscriberPrototype, {
 	  initReaction: function initReaction(action, target, name) {
@@ -429,6 +438,89 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  return function () {
 	    return reaction.unsubscribe();
+	  };
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = store;
+
+	var _computed = __webpack_require__(4);
+
+	var _computed2 = _interopRequireDefault(_computed);
+
+	var _observable = __webpack_require__(5);
+
+	var _observable2 = _interopRequireDefault(_observable);
+
+	var _subscribable = __webpack_require__(1);
+
+	var _subscribable2 = _interopRequireDefault(_subscribable);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function subscribe(sub, cb) {
+	  var react = {
+	    isReaction: true,
+	    onReady: function onReady() {
+	      cb();
+	      sub.removeDep(react);
+	    }
+	  };
+	  sub.addDep(react);
+	}
+
+	function store() {
+	  var events = [];
+
+	  function event(predicate) {
+	    var sub = (0, _subscribable2.default)(predicate.name);
+	    sub.predicate = predicate;
+	    events.push(sub);
+	    return sub;
+	  }
+
+	  function constB(seed) {
+	    return function () {
+	      return seed;
+	    };
+	  }
+
+	  function until(startB, ev, fn) {
+	    var currentB = (0, _observable2.default)(startB);
+	    subscribe(ev, function () {
+	      return currentB.value = fn(ev._event_);
+	    });
+	    return (0, _computed2.default)(function () {
+	      return currentB.value();
+	    });
+	  }
+
+	  return {
+	    event: event,
+	    constB: constB,
+	    until: until,
+	    dispatch: function dispatch(event) {
+	      var matches = [];
+	      events.forEach(function (sub) {
+	        if (sub.predicate(event)) {
+	          sub._event_ = event;
+	          sub.notifyDirty();
+	          matches.push(sub);
+	        }
+	      });
+	      matches.forEach(function (sub) {
+	        sub.notifyReady();
+	        sub._event_ = undefined;
+	      });
+	    }
 	  };
 	}
 
