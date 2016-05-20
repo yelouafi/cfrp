@@ -5,6 +5,8 @@ Attempt to implement (a subset) of [Classic FRP](http://conal.net/papers/icfp97/
 
 > Ok, actual implementation is not exactly CFRP but still w've got Behaviors and Events. And **it's still a rough POC**
 
+Don't ask me about Side Effects and Hot reload/Time travel. I'm not on that stage yet.
+
 So in the current actual implementation: Observable (in the Ko and MobX sense) + Reducer (in the Redux sense) = Behavior
 
 A behavior is much like a Redux reducer in the sens it entirely depends on a Reducer for the update logic; Unlike Mobx/Ko Observables
