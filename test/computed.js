@@ -1,7 +1,7 @@
 import test from 'tape'
 import { track, registerDep } from '../src/tracker'
 import subscribable from '../src/subscribable'
-import { ComputedPrototype } from '../src/computed'
+import computed, { ComputedPrototype, CIRCULAR_DEPENDENCY_ERROR } from '../src/computed'
 
 test('ComputedPrototype', assert => {
 
@@ -61,4 +61,22 @@ test('ComputedPrototype', assert => {
   assert.deepEqual(compObj.sources,  {[dep2.id]: dep2}, '#get should update its own dependencies when connected')
 
   assert.end()
+})
+
+
+test('ComputedPrototype - circular references', assert => {
+
+  const A = computed(() => B())
+  const B = computed(() => C())
+  const C = computed(() => A())
+
+  let errMessage
+  try {
+    track(A)
+  } catch(err) {
+    errMessage = err.message
+  }
+  assert.equal(errMessage, CIRCULAR_DEPENDENCY_ERROR, 'should detect circular dependencies')
+  assert.end()
+
 })

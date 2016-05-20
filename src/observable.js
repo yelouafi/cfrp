@@ -4,6 +4,7 @@ import { registerDep } from './tracker'
 export default function observable(seed, name) {
   const sub = subscribable(name)
   return {
+    _sub: sub,
     pick: () => seed,
 
     get value() {

@@ -5,27 +5,65 @@
     <title>Observable fantasy</title>
   </head>
   <body>
+    <div id="root"></div>
 
-  <button id="up">Up</button>
-  <button id="down">Down</button>
-  <button id="reset">Reset</button>
-
-  <span id="span"></span>
-
+<script src="https://npmcdn.com/@reactivex/rxjs/dist/global/Rx.umd.js" ></script>
 <script src="../dist/cfrp.js" charset="utf-8"></script>
 <script>
 
-const store = cfrp.store()
-const inc$ = store.event(e => e === 'inc')
-const dec$ = store.event(e => e === 'dec')
+const root = document.getElementById('root')
+const { event, behavior, observable, reaction, computed } = cfrp
 
-const b0 = store.constB(0)
-const b1 = store.constB(1)
-const toggle = store.until(b0, inc$, () => b1)
-//const printB = cfrp.observable(false)
-//const B = cfrp.computed(() => A() * 2)
+// Events
+const addTodo$ = event()
+const toggle$ = event()
+const toggleAll$ = event()
 
-cfrp.reaction(() => console.log('toggle', toggle()))
+// Behaviors
+const editingTodo = observable('')
+const newTodo = (id, title) => ({
+  id,
+  title: () => title,
+  done: behavior(
+    false,
+    [
+      toggle$.filter(tid => tid == id),
+      prev => !prev
+    ],
+    [
+      toggleAll$,
+      (_, done) => done
+    ]
+  )
+})
+
+const todoList = behavior(
+  [],
+  [
+    addTodo$,
+    prev => prev.concat( newTodo(prev.length, editingTodo.pick()) ),
+  ]
+)
+
+const allDone = computed(() => todoList().length && todoList().every(t => t.done() ))
+
+
+const view = computed(() => `
+  <input id=todoInput type=text onchange="editingTodo.value = event.target.value" />
+  <button id=addTodo onclick="addTodo$.next()">Add Todo</button>
+  <input type=checkbox ${allDone() ? 'checked' : ''} onclick="toggleAll$.next(event.target.checked)" />
+  <ul>${
+    todoList().map(todo => `
+      <li>
+        <input type=checkbox ${todo.done() ? 'checked' : ''} onclick="toggle$.next(${todo.id})" />
+        ${todo.title()}
+      </li>
+    `).join('')
+  }</ul>
+`)
+
+
+reaction(() => root.innerHTML = view() )
 
 
 

@@ -1,7 +1,8 @@
 
+import event from './event'
 import observable from './observable'
-import computed from './computed'
+import behavior from './behavior'
+import computed, { ComputedPrototype } from './computed'
 import reaction from './reaction'
-import store from './store'
 
-export { observable, computed, reaction, store }
+export { event, observable, behavior, computed, reaction, ComputedPrototype }

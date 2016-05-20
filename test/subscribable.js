@@ -14,19 +14,17 @@ test('subscribable', assert => {
 
   const dep = subscribable('dep')
   const reaction = subscribable('reaction')
-  reaction.isReaction = true
 
   sub.addDep(dep)
-  sub.addDep(reaction)
+  sub.addDep(reaction, true)
 
   assert.equal(sub.depsCount, 2, 'must track dependents count')
   assert.deepEqual(addedDeps, [dep, reaction], '`addDep` must invoke `onAddDep` callback')
 
   const dep_dep = subscribable('dep_dep')
   const dep_reaction = subscribable('dep_reaction')
-  dep_reaction.isReaction = true
   dep.addDep(dep_dep)
-  dep.addDep(dep_reaction)
+  dep.addDep(dep_reaction, true)
 
   sub.notifyDirty()
   assert.equal(dep.dirty, true, 'must notify dirty to direct dependents')

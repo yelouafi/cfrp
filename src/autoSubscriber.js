@@ -8,7 +8,7 @@ const addSource = self => src => {
   src[self.id] = self.trackVersion
   if(!sources[srcId]) {
     sources[srcId] = src
-    src.addDep(self)
+    src.addDep(self, self.isReaction)
   }
 }
 
@@ -30,7 +30,7 @@ export const AutoSubscriberPrototype = {
       const src = sources[key]
       if(src === undefined) continue
       if(src[thisId] !== this.trackVersion) {
-        src.removeDep(this)
+        src.removeDep(this, this.isReaction)
         src[thisId] = undefined
         sources[src.id] = undefined
       }
@@ -49,7 +49,7 @@ export const AutoSubscriberPrototype = {
     this.sources = {}
     for(var key in sources) {
       const src = sources[key]
-      src.removeDep(this)
+      src.removeDep(this, this.isReaction)
       src[this.id] = undefined
     }
   }

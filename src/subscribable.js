@@ -1,7 +1,7 @@
-import { eachObj, autoId } from './utils'
+import { eachObj, autoId  } from './utils'
 
 /*
-  Subscriber  : Derivation | Reaction
+  Dep  : Derivation | Reaction
   Derivation  : { id, dirty }
   Reaction    : { id, dirty, onReady }
 */
@@ -17,8 +17,9 @@ export const SubscribablePrototype = {
     this.depsCount = 0
   },
 
-  addDep(d) {
-    const deps = d.isReaction ? this.reactions : this.derivations
+  addDep(d, isReaction) {
+    if(this.completed) return
+    const deps = isReaction ? this.reactions : this.derivations
     if(!deps[d.id]) {
       deps[d.id] = d
       this.depsCount++
@@ -26,8 +27,9 @@ export const SubscribablePrototype = {
     }
   },
 
-  removeDep(d) {
-    const deps = d.isReaction ? this.reactions : this.derivations
+  removeDep(d, isReaction) {
+    if(this.completed) return
+    const deps = isReaction ? this.reactions : this.derivations
     if(deps[d.id]) {
       deps[d.id] = undefined
       this.depsCount--
@@ -35,22 +37,30 @@ export const SubscribablePrototype = {
     }
   },
 
-  notifyDirty() {
-    eachObj(this.reactions, r => r.dirty = true)
-    eachObj(this.derivations, d => {
-       d.dirty = true
-       d.notifyDirty()
-    })
+  end() {
+    this.completed = true
+    this.derivations = null
+    this.reactions = null
+    this.depsCount = 0
+    this.onRemoveDep && this.onRemoveDep()
   },
 
-  notifyReady() {
-    eachObj(this.reactions, r => r.onReady())
-    eachObj(this.derivations, d => d.notifyReady())
+  notifyDirty(e) {
+    if(this.completed) return
+    eachObj(this.reactions, r => r.onDirty && r.onDirty(e))
+    eachObj(this.derivations, d => d.onDirty && d.onDirty(e))
   },
 
-  notify() {
-    this.notifyDirty()
-    this.notifyReady()
+  notifyReady(e) {
+    if(this.completed) return
+    eachObj(this.reactions, r => r.onReady(e))
+    eachObj(this.derivations, d => d.notifyReady(e))
+  },
+
+  notify(e) {
+    if(this.completed) return
+    this.notifyDirty(e)
+    this.notifyReady(e)
   },
 
   toString() {
