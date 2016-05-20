@@ -7,13 +7,16 @@ Attempt to implement (a subset) of [Classic FRP](http://conal.net/papers/icfp97/
 
 Don't ask me about Side Effects and Hot reload/Time travel. I'm not on that stage yet.
 
-So in the current actual implementation: Observable (in the Ko and MobX sense) + Reducer (in the Redux sense) = Behavior
+So in the current actual implementation: 
 
-A behavior is much like a Redux reducer in the sens it entirely depends on a Reducer for the update logic; Unlike Mobx/Ko Observables
+> Observable (in the Ko and MobX sense) + Reducer (in the Redux sense) = Behavior
+
+A behavior is much like a Redux reducer in the sense it entirely depends on a Reducer for the update logic; Unlike Mobx/Ko Observables
 you can not set the value of an Observable directly but you have to declare the entire logic on the Creation
 
-A behavior is also much like a Mobx/Ko observable because you can react to its state changes. Advantage is that in scenarios like 
-React Rendering you can get finer grained subscription.
+A behavior is also much like a Mobx/Ko observable because you can react to its state changes. The advantage is that in scenarios like 
+React Rendering you can get finer grained subscriptione (In Redux you can also subscribe to state change but you'll have to perform
+shallow comparisons to determine which parts have changed [like implemented in react-redux]).
 
 
 ```js
@@ -37,9 +40,9 @@ decrement$.next()
 // => log 2
 ```
 
-In case you're wondering events are just like Rx Subjects. We use them to hookup callbacks in UI (e.g. React's onXXXX={increment$.next()}). In fact you can replce this with Rx's Subjects and it'll work the same
-/
-In Rx; Subjects are subject to caution; but I prefer this style instead of pushing events from React Components into
+In case you're wondering events are just like Rx Subjects. We use them to hookup callbacks in UI (e.g. React's `onXXXX={increment$.next()}`). In fact you can replace this with Rx Subjects and it'll work the same way.
+
+In Rx, Subjects are subject to caution; but I prefer this style instead of pushing events from React Components into
 callbacks instead of pulling Event Streams based on some fragile CSS selector.
 
 ## (Deadly Boring) TodoList example
