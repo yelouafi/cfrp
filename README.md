@@ -11,12 +11,12 @@ So in the current actual implementation:
 
 > Observable (in the Ko and MobX sense) + Reducer (in the Redux sense) = Behavior
 
-A behavior is much like a Redux reducer in the sense it entirely depends on a Reducer for the update logic; Unlike Mobx/Ko Observables
-you can not set the value of an Observable directly but you have to declare the entire logic on the Creation
+A Behavior is much like a Redux reducer in the sense it entirely depends on a Reducer for the update logic; Unlike Mobx/Ko Observables
+you can not set the value of a Behavior directly but you have to declare the entire logic on the Creation
 
-A behavior is also much like a Mobx/Ko observable because you can react to its state changes. The advantage is that in scenarios like 
+A Behavior is also much like a Mobx/Ko observable because you can react to its state changes. The advantage is that in scenarios like 
 React Rendering you can get finer grained subscriptione (In Redux you can also subscribe to state change but you'll have to perform
-shallow comparisons to determine which parts have changed [like implemented in react-redux]).
+shallow comparisons to determine which parts have changed [like implemented in react-redux], and in case of dynamic collections like arrays or maps, you need to normalize the state tree in order to avoid unnecessary reconciliations).
 
 
 ```js
