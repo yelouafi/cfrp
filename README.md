@@ -56,7 +56,7 @@ export const toggleAll$ = event('toggleAll')
 export const addTodo$ = event('addTodo')
 export const removeTodo$ = event('removeTodo')
 
-export const editingTodo = observable('')
+export const editingTodo = observable('') // this is a SHAME i know. Just too lazy to create beh+event
 
 const eqF = id => eid => id === eid
 
