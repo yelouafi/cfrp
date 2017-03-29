@@ -42,7 +42,7 @@ decrement$.next()
 
 In case you're wondering events are just like Rx Subjects. We use them to hookup callbacks in UI (e.g. React's `onXXXX={increment$.next()}`). In fact you can replace this with Rx Subjects and it'll work the same way.
 
-In Rx, Subjects are subject to caution; but I prefer this style of pushing events from React Components into
+In Rx, Subjects are subject (pun unintended) to caution; but I prefer this style of pushing events from React Components into
 callbacks instead of pulling Event Streams based on some fragile CSS selector.
 
 ## (Deadly Boring) TodoList example
